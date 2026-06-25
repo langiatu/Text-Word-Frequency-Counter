@@ -18,20 +18,25 @@ Counter::Counter()
 	"and", "but", "or", "nor", "for", "so", "yet"
 	};
 	
-	this->FileName = R"(C:\Users\Huawei\Desktop\test.txt)";
+	this->FileName = R"()";
 }
 
-//对用户输入的文件路径进行多重验证，并输出提示信息
+//对用户输入的文件路径进行验证，并输出提示信息
 bool Counter::Verify()
 {
 	bool verify = false;
-	//对文件路径格式进行验证
 
 	//检查文件是否存在
+	std::ifstream file(this->FileName, std::ios::in);
+	if (file.is_open()) {
 
-	//检测文件是否为英文文本文件
-
-	return true;
+		//std::cout << "open" << std::endl;
+		verify = true;
+	}
+	else {
+		std::cout << "文件打开失败，请检查文件路径是否正确" << std::endl;
+	}
+	return verify;
 }
 
 //对文本内出现的单词进行统计
@@ -59,7 +64,8 @@ void Counter::Count()
 			//当word不为英文字母时跳过
 			word.erase(std::remove_if(word.begin(), word.end(), [](unsigned char c) {
 				return !std::isalpha(c);
-				}));
+				}),word.end());
+
 
 			//去除停用词
 			for (auto it = this->stopWords.begin(); it != this->stopWords.end(); it++) {
@@ -118,9 +124,9 @@ void Counter::Control()
 {
 	std::cout << "请输入需要进行统计的英文文本文件的完整路径" << std::endl;
 	
-	//std::cin >> this->FileName;
+	std::cin >> this->FileName;
 
-	if (!Verify()) {	//文件验证失败直接返回
+	if (!this->Verify()) {	//文件验证失败直接返回
 		return;
 	}
 
@@ -128,7 +134,7 @@ void Counter::Control()
 	this->Count();
 
 	//输入需要查看的已统计的单词个数
-	this->ShowCount(this->WordCount.size());
+	//this->ShowCount(this->WordCount.size());
 }
 
 Counter::~Counter()
